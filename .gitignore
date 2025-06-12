@@ -32,6 +32,7 @@ build/
 ### VS Code ###
 .vscode/
  ### Apliaction propertis ###
- puntos-verdes/src/main/resources/application.properties
+ src/main/resources/application.properties
  *.properties
- **/aplication.properties
+ **/application.properties
+/src/main/resources/application.properties
