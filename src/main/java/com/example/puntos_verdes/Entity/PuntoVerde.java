@@ -26,7 +26,6 @@ public class PuntoVerde {
     private BigDecimal latitud;
     private BigDecimal longitud;
     private String direccion;
-
     @Enumerated(EnumType.STRING)
     private TipoResiduo tipo_residuo;
     private String imagen_url;

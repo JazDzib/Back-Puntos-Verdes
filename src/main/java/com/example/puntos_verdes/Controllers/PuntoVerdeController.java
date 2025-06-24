@@ -1,5 +1,6 @@
 package com.example.puntos_verdes.Controllers;
 
+import com.example.puntos_verdes.DTO.PuntoVerdeDTO;
 import com.example.puntos_verdes.Entity.PuntoVerde;
 import com.example.puntos_verdes.Service.PuntoVerdeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,8 +25,8 @@ public class PuntoVerdeController {
 
     @GetMapping
     @Operation(summary = "ci")
-    public List<PuntoVerde> getPuntoVerde(){
-        return puntoVerdeService.getPuntoVerde();
+    public List<PuntoVerdeDTO> getPuntoVerde(){
+        return puntoVerdeService.getPuntoVerdeList();
     }
 
     @PostMapping("insertPV")
