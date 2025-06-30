@@ -31,9 +31,9 @@ public class PuntoVerdeController {
 
     @PostMapping("insertPV")
     @Transactional
-     public ResponseEntity<Void> insertPuntoVerde(@RequestBody  PuntoVerde puntoVerde){
-        puntoVerdeService.createPuntoVerde(puntoVerde);
-        return ResponseEntity.noContent().build();
+     public ResponseEntity<Long> insertPuntoVerde(@RequestBody  PuntoVerdeDTO puntoVerde){
+        Long id = puntoVerdeService.createPuntoVerde(puntoVerde);
+        return ResponseEntity.ok(id);
     }
 
     @DeleteMapping("{puntoId}")

@@ -20,8 +20,10 @@ public class PuntoVerdeService {
                 .map(PuntoVerdeDTO::new)
                 .toList();
     }
-    public void createPuntoVerde(PuntoVerde puntoVerde) {
-        puntoVerdeRepository.save(puntoVerde);
+    public Long createPuntoVerde(PuntoVerdeDTO puntoVerde) {
+        PuntoVerde entity = new PuntoVerde(puntoVerde);
+        puntoVerdeRepository.save(entity);
+        return entity.getId();
     }
 
     public void deletePuntoVerde(Long id) {

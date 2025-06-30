@@ -1,5 +1,6 @@
 package com.example.puntos_verdes.Entity;
 
+import com.example.puntos_verdes.DTO.PuntoVerdeDTO;
 import com.example.puntos_verdes.Entity.Enums.TipoResiduo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,4 +30,15 @@ public class PuntoVerde {
     @Enumerated(EnumType.STRING)
     private TipoResiduo tipo_residuo;
     private String imagen_url;
+
+
+    public PuntoVerde(PuntoVerdeDTO dto) {
+        this.nombre = dto.getNombre();
+        this.descripcion = dto.getDescripcion();
+        this.direccion = dto.getDireccion();
+        this.latitud = dto.getLatitud();
+        this.longitud = dto.getLongitud();
+        this.tipo_residuo = dto.getTipo_residuo();
+        this.imagen_url  = dto.getImagen_url();
+    }
 }
