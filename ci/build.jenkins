@@ -1,0 +1,68 @@
+pipeline{
+    agent any
+    
+    environment {
+        IMAGE_NAME = "puntos-verdes-back"
+        DOCKERHUB_NAMESPACE = "softwaredevuady"
+        BUILD_ID = "${env.BUILD_NUMBER}"
+    }
+    
+    tools{
+        jdk 'jdk-24'
+        maven 'Maven3'
+    }
+    
+    stages{
+        stage('Checkout') {
+            steps {
+                checkout scm
+        }
+}
+        stage('Compile and generate .jar'){
+            steps{
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+        
+        stage('Build Docker image'){
+            steps{
+                sh "docker build -t ${IMAGE_NAME}:b${BUILD_ID} ."
+            }
+        }
+        
+        stage('Tag imagen') {
+            steps {
+                sh """
+                    docker tag ${IMAGE_NAME}:b${BUILD_ID} ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:b${BUILD_ID}
+                    docker tag ${IMAGE_NAME}:b${BUILD_ID} ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:latest
+                """
+            }
+        }
+        
+        stage('Push a DockerHub') {
+            steps {
+                withCredentials([usernamePassword(
+                credentialsId: 'dockerhub-credentials',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin || exit 1
+                        docker push ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:b${BUILD_ID}
+                        docker push ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:latest
+                    '''
+                }
+            }
+        }
+    }
+        
+    post {
+        success {
+            echo "Build and Docker push successful!"
+        }
+        failure {
+            echo "Build failed."
+        }
+    }
+        
+}

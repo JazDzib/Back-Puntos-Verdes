@@ -1,0 +1,48 @@
+pipeline{
+    agent any
+
+    environment {
+        REMOTE_HOST = 'Backend-uady'
+        IMAGE_NAME = 'softwaredevuady/puntos-verdes-back:latest'
+        CONTAINER_NAME = 'puntos-verdes-back'
+        PORT_MAPPING = '-p 8081:8080'
+        DB_HOST = '10.0.0.95'
+    }
+    
+    stages{
+        stage('SSH deploy'){
+            steps{
+                 withCredentials([
+                    usernamePassword(
+                        credentialsId: 'db-postgresql-production',
+                        usernameVariable: 'DB_USER',
+                        passwordVariable: 'DB_PASS'
+                    )
+                ]) {
+                    sh """
+                        ssh ${REMOTE_HOST} << EOF
+                        
+                        docker stop ${CONTAINER_NAME} 2>/dev/null || echo "old container did not exist runing"
+                        docker rm ${CONTAINER_NAME} 2>/dev/null || echo "old container did not exist"
+
+                        docker pull ${IMAGE_NAME} || { echo "Error doing pull"; exit 1; }
+
+                        docker run -d \\
+                            --name ${CONTAINER_NAME} \\
+                            ${PORT_MAPPING} \\
+                            -e DB_URL=${DB_HOST} \\
+                            -e DB_TABLE_NAME=puntos_verdes \\
+                            -e DB_USER_NAME=${DB_USER} \\
+                            -e DB_PASSWORD=${DB_PASS} \\
+                            ${IMAGE_NAME} || { echo "Error runing new container"; exit 1; }
+
+                        exit
+                        EOF
+                    """
+                }
+
+            }
+        }
+    }
+
+}
