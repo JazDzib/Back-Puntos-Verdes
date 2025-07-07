@@ -1,15 +1,14 @@
-package com.example.puntos_verdes.security;
+package com.example.puntos_verdes.Config;
 
+import com.example.puntos_verdes.JWT.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -17,14 +16,17 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
-
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Bean
+   @Autowired
+    private AuthenticationProvider authProvider;
+    /*@Bean
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails user = User
                 .withUsername("admin")
@@ -32,19 +34,27 @@ public class SecurityConfig {
                 .roles("USER")
                 .build();
         return new InMemoryUserDetailsManager(user);
-    }
+    }*/
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable()) //  Solo si es una API stateless (sin cookies)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").authenticated() // Rutas protegidas
-                        .anyRequest().permitAll() // Resto abierto
-                )
-                .httpBasic(Customizer.withDefaults()); // Reemplazo de httpBasic() obsoleto
+    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
 
+        //Disable default session of springboot
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
+
+        http
+                .authorizeHttpRequests((authorize) ->
+                        authorize
+                                .requestMatchers("/auth/**").permitAll()
+                                .anyRequest().authenticated()
+                );
+        http
+                .authenticationProvider(authProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
