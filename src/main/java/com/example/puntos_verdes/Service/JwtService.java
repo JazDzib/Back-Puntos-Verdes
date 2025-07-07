@@ -10,13 +10,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class JwtService {
-    private static final String SECRET = "holaestaesmisecretoultrasecretosdfsdfsdfsdfsdfslkdjflksdjfklj4k4jkl5jlk4j5lkjkjg";
+
+    private static final String base64Secret = Base64.getEncoder().encodeToString(System.getenv("SECRET_KEY").getBytes());
+    private static final String SECRET = base64Secret;
 
     public String getToken(UserDetails usuario) {
         return getToken(new HashMap<>(), usuario);
