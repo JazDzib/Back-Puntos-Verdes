@@ -17,6 +17,8 @@ pipeline{
                         credentialsId: 'db-postgresql-production',
                         usernameVariable: 'DB_USER',
                         passwordVariable: 'DB_PASS'
+                    ),string(
+                        credentialsId: 'JWT-greengeo', variable: 'SECRET_KEY'
                     )
                 ]) {
                     sh """
@@ -34,6 +36,7 @@ pipeline{
                             -e DB_TABLE_NAME=puntos_verdes \\
                             -e DB_USER_NAME=${DB_USER} \\
                             -e DB_PASSWORD=${DB_PASS} \\
+                            -e SECRET_KEY=${SECRET_KEY} \\
                             ${IMAGE_NAME} || { echo "Error runing new container"; exit 1; }
 
                         exit
