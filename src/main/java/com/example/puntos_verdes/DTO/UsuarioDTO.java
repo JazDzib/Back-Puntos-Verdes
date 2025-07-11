@@ -17,19 +17,17 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class UsuarioDTO {
-    private  Long id;
+
     private String nombre;
     @NotBlank
     private String correo;
     @NotBlank
     private String contrasenia;
-    private RolUsuario rol_usuario;
+
 
     public UsuarioDTO(Usuario usuario) {
-        this.id = usuario.getId();
         this.nombre = usuario.getNombre();
         this.correo = usuario.getCorreo();
         this.contrasenia = usuario.getContrasenia();
-        this.rol_usuario = usuario.getRol_usuario();
     }
 }
