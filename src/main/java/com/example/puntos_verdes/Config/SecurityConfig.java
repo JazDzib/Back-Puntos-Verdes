@@ -49,7 +49,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api-docs/**").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/PuntoVerde").permitAll()
                                 .requestMatchers(
