@@ -25,6 +25,7 @@ public class UsuarioDTO {
     private String contrasenia;
 
 
+
     public UsuarioDTO(Usuario usuario) {
         this.nombre = usuario.getNombre();
         this.correo = usuario.getCorreo();

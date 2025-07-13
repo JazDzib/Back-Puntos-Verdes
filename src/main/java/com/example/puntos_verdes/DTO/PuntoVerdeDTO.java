@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 public class PuntoVerdeDTO {
-    private Long id;
     @NotBlank
     private String nombre;
     private String descripcion;
@@ -29,7 +28,7 @@ public class PuntoVerdeDTO {
 
 
     public PuntoVerdeDTO(PuntoVerde punto) {
-        this.id = punto.getId();
+
         this.nombre = punto.getNombre();
         this.descripcion = punto.getDescripcion();
         this.latitud = punto.getLatitud();
