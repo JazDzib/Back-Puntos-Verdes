@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @Tag(name  =  "Authentication", description =  "Allow authenticate and authorize clients")
 @RequiredArgsConstructor
 public class authController {
